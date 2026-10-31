@@ -4,6 +4,8 @@ BLM4587 iOS ile Mobil Uygulama Geliştirme I (Flutter) dersi dönem projesi (202
 
 ŞuBilet Mobil, Türkiye genelindeki otobüs firmalarının seferlerini tek bir çatı altında toplayarak kullanıcıların şehirlerarası sefer arayıp karşılaştırabildiği, interaktif koltuk planı üzerinden seçim yapıp bilet alabildiği bir mobil pazar yeri uygulamasıdır. Proje; Flutter mobil istemcisi ile C# ASP.NET Core Web API arka uç servisinin entegrasyonu üzerine kuruludur.
 
+Arka uç, ŞuBilet web projesiyle **ortaktır** ve [semihtakilan/SuBilet](https://github.com/semihtakilan/SuBilet) deposunda geliştirilir. Web sitesi ve mobil uygulama aynı API'yi ve aynı PostgreSQL veritabanını kullanır; mobilin ihtiyaç duyduğu uç noktalar o depoya eklenir. Bu depoda yalnızca Flutter uygulaması bulunur.
+
 ## Ekip
 
 | Ad Soyad | Öğrenci No | GitHub | Lider olduğu haftalar |
@@ -14,10 +16,10 @@ BLM4587 iOS ile Mobil Uygulama Geliştirme I (Flutter) dersi dönem projesi (202
 ## Teknolojiler
 
 - **Mobil İstemci:** Flutter 3.x, Dart 3.x, Material 3
-- **Mobil Paketler:** `http`, `shared_preferences`, `intl`, `qr_flutter` (ilerleyen haftalarda eklenecek)
-- **Arka Uç (Web API - 6. Haftada Eklenecek):** C# / ASP.NET Core 10 Web API, Swagger / OpenAPI
+- **Mobil Paketler:** `http`, `shared_preferences`, `flutter_secure_storage`, `provider`, `intl`, `qr_flutter` (ilerleyen haftalarda eklenecek)
+- **Arka Uç (web projesiyle ortak):** C# / ASP.NET Core 10 Web API, Swagger / OpenAPI – [semihtakilan/SuBilet](https://github.com/semihtakilan/SuBilet)
 - **Veritabanı & ORM (Arka Uç):** PostgreSQL, Entity Framework Core (Code-First migration)
-- **Kimlik & Yetkilendirme:** JWT (JSON Web Token), Rol Yönetimi (Admin, Yolcu, Ziyaretçi)
+- **Kimlik & Yetkilendirme:** JWT (JSON Web Token), Rol Yönetimi (Admin, Yolcu, Ziyaretçi). Firma Yetkilisi rolü yalnızca web sitesinde kullanılır.
 
 ## Kurulum ve Çalıştırma
 
@@ -50,11 +52,11 @@ flutter run        # ya da tarayıcıda çalıştırmak için: flutter run -d ch
 
 ## Proje Yapısı
 
-Proje şu anda 1. hafta mobil isterlerini içermektedir. Arka uç Web API projesi (`/api`), ders planı doğrultusunda 6. haftada depoya dahil edilecektir.
+Bu depoda yalnızca Flutter uygulaması bulunur. Arka uç (Web API ve veritabanı migration'ları) web projesiyle ortaktır ve [semihtakilan/SuBilet](https://github.com/semihtakilan/SuBilet) deposundadır.
 
 ```text
-SuBilet/
-└── mobile/                      # Flutter mobil uygulaması (subilet_mobile)
+SuBilet-Flutter/
+└── mobile/                      # Flutter mobil uygulaması (paket adı: mobile)
     ├── lib/
     │   ├── main.dart            # Başlangıç noktası, Material 3 teması, Sefer Arama ekranı
     │   ├── models/              # (3. haftadan itibaren) Sefer, Bilet veri modelleri
@@ -63,8 +65,6 @@ SuBilet/
     │   └── widgets/             # Tekrar kullanılabilir arayüz bileşenleri
     └── pubspec.yaml             # Paket bağımlılıkları ve varlık ayarları
 ```
-
-*(Not: `/api` arka uç servis klasörü ve migration dosyaları, müfredat takvimine uygun olarak 6. haftada eklenecektir.)*
 
 ## Sık Karşılaşılan Hatalar
 
