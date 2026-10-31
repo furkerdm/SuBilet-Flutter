@@ -25,7 +25,7 @@ Arka uç, ŞuBilet web projesiyle **ortaktır** ve [semihtakilan/SuBilet](https:
 
 ### 1. Gereksinimleri kurun
 
-- **Flutter SDK:** Flutter 3.x (stable). Kontrol: `flutter --version`
+- **Flutter SDK:** Flutter 3.47.9 veya üstü (stable, Dart 3.13.7+). Kontrol: `flutter --version`; eskiyse `flutter upgrade`
 - **Android Geliştirme Ortamı:** Android Studio, Android SDK Build-Tools ve Android Emulator
 - **Ortam kontrolü:** `flutter doctor` komutunun sorunsuz olduğunu doğrulayın.
 
@@ -49,6 +49,13 @@ Bir Android emülatör veya fiziksel cihaz bağlıyken:
 ```bash
 flutter run        # ya da tarayıcıda çalıştırmak için: flutter run -d chrome
 ```
+
+### 5. Ortak arka ucu çalıştırın (6. haftadan itibaren)
+
+Uygulama 6. haftadan itibaren verileri ortak Web API'den alır. Arka ucu kurmak için [web deposunun README'sindeki](https://github.com/semihtakilan/SuBilet#kurulum-sıfırdan) adımları izleyin. API, bilgisayarda `http://localhost:5214` adresinde çalışır.
+
+- **Android emülatör:** Bilgisayardaki API'ye `localhost` ile değil, `http://10.0.2.2:5214` ile ulaşılır.
+- **Gerçek cihaz:** Telefon ve bilgisayar aynı ağda olmalı. Arka ucu `dotnet run --urls http://0.0.0.0:5214` ile başlatın ve uygulamada bilgisayarın yerel IP adresini kullanın.
 
 ## Proje Yapısı
 
@@ -75,6 +82,9 @@ SuBilet-Flutter/
 | `RenderFlex overflowed by ... pixels` | Arayüz ekrana sığmıyor; taşan widget'ı `Expanded` ile sarın ya da gövdeye `SingleChildScrollView` ekleyin. |
 | Değişiklikler ekrana yansımıyor | Arayüz durumunu güncelleyen mantığı `setState(() { ... })` bloğu içine alın. |
 | Android derleme hatası (Gradle) | Proje yolunda Türkçe karakter ya da boşluk olmadığından emin olun; `flutter clean` ve `flutter pub get` çalıştırın. |
+| `flutter pub get`: "Try using the Flutter SDK version …" | Flutter sürümünüz projenin istediğinden eski; `flutter upgrade` çalıştırın. |
+| `flutter analyze` çöküyor (`FormatException: Unexpected end of input`) | Proje yolunda Türkçe karakter var (ör. `ŞuBilet`). Yerine `dart analyze` kullanın ya da projeyi Türkçe karakter içermeyen bir klasöre taşıyın. |
+| API'ye bağlanılamıyor (`Connection refused`) | Arka uç çalışmıyor ya da emülatörde `localhost` kullanılmış; adres `http://10.0.2.2:5214` olmalı. |
 
 ## Haftalık İlerleme
 
