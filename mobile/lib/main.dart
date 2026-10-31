@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() => runApp(const SuBiletApp());
 
@@ -10,6 +11,10 @@ class SuBiletApp extends StatelessWidget {
     return MaterialApp(
       title: 'ŞuBilet',
       debugShowCheckedModeBanner: false,
+      // Takvim ve diyalog gibi hazır bileşenler Türkçe görünsün
+      locale: const Locale('tr', 'TR'),
+      supportedLocales: const [Locale('tr', 'TR')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: Colors.indigo,
