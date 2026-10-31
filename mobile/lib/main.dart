@@ -49,6 +49,9 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
   String _kalkis = 'Ankara';
   String _varis = 'İstanbul';
 
+  // Kalkış ve varış aynı şehir olamaz (web tarafındaki kural)
+  bool get _aramaYapilabilir => _kalkis != _varis;
+
   static const _gunAdlari = [
     'Pazartesi',
     'Salı',
@@ -247,6 +250,26 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
                         ),
                       ),
                     ),
+                    if (!_aramaYapilabilir)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              size: 18,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Kalkış ve varış noktası aynı olamaz.',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     const SizedBox(height: 16),
                     // Tarih Seçim Butonları (Bugün / Yarın)
                     Row(
@@ -323,7 +346,8 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
                       child: FilledButton.icon(
                         icon: const Icon(Icons.search),
                         label: const Text('Otobüs Bileti Bul', style: TextStyle(fontSize: 16)),
-                        onPressed: _seferAra,
+                        // Kural sağlanmıyorsa buton pasif olur
+                        onPressed: _aramaYapilabilir ? _seferAra : null,
                       ),
                     ),
                   ],
