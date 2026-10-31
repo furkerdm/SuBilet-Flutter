@@ -32,6 +32,20 @@ class SeferAramaSayfasi extends StatefulWidget {
 }
 
 class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
+  // 2. haftada 81 ilin tamamı DropdownButton ile seçilebilecek
+  static const _sehirler = [
+    'Adana',
+    'Ankara',
+    'Antalya',
+    'Bursa',
+    'Eskişehir',
+    'İstanbul',
+    'İzmir',
+    'Konya',
+    'Samsun',
+    'Trabzon',
+  ];
+
   String _kalkis = 'Ankara';
   String _varis = 'İstanbul';
 
@@ -49,6 +63,54 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
       const SnackBar(
         content: Text('Kalkış ve varış noktaları yer değiştirdi.'),
         duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  // Alttan açılan listeden kalkış ya da varış şehrini seçtirir
+  Future<void> _sehirSec({required bool kalkisMi}) async {
+    final mevcut = kalkisMi ? _kalkis : _varis;
+    final secilen = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Text(
+                kalkisMi ? 'Nereden?' : 'Nereye?',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            for (final sehir in _sehirler)
+              ListTile(
+                title: Text(sehir),
+                trailing: sehir == mevcut
+                    ? const Icon(Icons.check, color: Colors.indigo)
+                    : null,
+                onTap: () => Navigator.pop(context, sehir),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (secilen == null || !mounted) return;
+
+    setState(() {
+      if (kalkisMi) {
+        _kalkis = secilen;
+      } else {
+        _varis = secilen;
+      }
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${kalkisMi ? 'Kalkış' : 'Varış'} noktası $secilen olarak seçildi.',
+        ),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -109,6 +171,7 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
                       child: ListTile(
                         leading: const Icon(Icons.location_on, color: Colors.indigo),
                         title: const Text('Kalkış Noktası'),
+                        onTap: () => _sehirSec(kalkisMi: true),
                         subtitle: Text(
                           _kalkis,
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -130,6 +193,7 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
                       child: ListTile(
                         leading: const Icon(Icons.flag, color: Colors.indigo),
                         title: const Text('Varış Noktası'),
+                        onTap: () => _sehirSec(kalkisMi: false),
                         subtitle: Text(
                           _varis,
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
