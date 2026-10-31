@@ -90,7 +90,7 @@ SuBilet-Flutter/
 
 | Hafta | Lider | Yapılan / Planlanan İşler | Durum |
 |:---:|---|---|:---:|
-| 1 | Furkan ERDEM | Mobil proje (`/mobile`) ve Material 3 tema altyapısı; Scaffold, Row, Column ile Sefer Arama ana ekranı; Nereden/Nereye ve tarih seçimi (`ElevatedButton`, `FilledButton`, `OutlinedButton`) ve SnackBar geri bildirimleri; `setState` ile etkileşim ve dinamik arama butonu | Devam ediyor |
+| 1 | Furkan ERDEM | Mobil proje (`/mobile`), Material 3 tema ve Türkçe yerelleştirme; Scaffold, Row, Column ile Sefer Arama ana ekranı; listeden Nereden/Nereye seçimi, Bugün/Yarın ve Türkçe takvimden tarih seçimi (`ElevatedButton`, `FilledButton`, `OutlinedButton`), SnackBar geri bildirimleri; `setState` ile etkileşim, aynı şehirde pasifleşen arama butonu; widget testleri | Tamamlandı |
 | 2 | Furkan ERDEM | Kayıt (ad, soyad, e-posta, cep telefonu, şifre) ve giriş formları; `TextFormField` ve web ile aynı `validator` kuralları; şehir seçimi için `DropdownButton` (81 il), sözleşme onayı için `CheckboxListTile`; klavye taşma koruması | – |
 | 3 | Furkan ERDEM | Veri modelleri (`Sefer`, `Otobus`, `Sehir`, `Bilet`); `ListView.builder` ile sefer sonuç listesi, sefer kartları (`Card`, `ListTile`) ve boş durum tasarımı; fiyat/saat sıralaması ve firma filtresi | – |
 | 4 | Furkan ERDEM | `Navigator` ile sayfa geçişi ve veri aktarımı; 2+1 / 2+2 koltuk yerleşimi, birden fazla koltuk seçimi, yolcu cinsiyeti ve yan koltuk kuralı (`AlertDialog`); 1. Sınıf İçi Gösterim (18 Kasım) | – |
