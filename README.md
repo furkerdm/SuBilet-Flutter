@@ -90,12 +90,12 @@ SuBilet-Flutter/
 
 | Hafta | Lider | Yapılan / Planlanan İşler | Durum |
 |:---:|---|---|:---:|
-| 1 | Furkan ERDEM | Mobil proje mimarisi (`/mobile`); Material 3 tema altyapısı; Scaffold, Row, Column ile Sefer Arama ana ekranı; şehir değiştirme, dinamik tarih seçimi (Bugün/Yarın) ve SnackBar etkileşimleri | Tamamlandı |
-| 2 | Furkan ERDEM | Formlar ve doğrulama: Kayıt/giriş ekranları, `TextFormField`, `validator` kuralları, `DropdownButton` ve klavye taşma koruması | – |
-| 3 | Furkan ERDEM | Veri modelleri (`Sefer`, `Otobus`); `ListView.builder` ile dinamik sefer sonuç listesi, sefer kartları (`Card`, `ListTile`) ve boş durum tasarımı | – |
-| 4 | Furkan ERDEM | `Navigator` ile sayfa geçişi ve veri aktarımı; 2+1 / 2+2 otobüs koltuk yerleşimi, cinsiyet kuralı ve `AlertDialog`; 1. Sınıf İçi Gösterim | – |
-| 5 | Furkan ERDEM | Uygulama iskeleti: `NavigationBar` (alt menü), `Drawer` (yan menü), `IndexedStack`; yolcu bilgileri formu ve kredi kartı simülasyonu | – |
-| 6 | Semih TAKILAN | Web API projesinin depoya eklenmesi (`/api`), `http` paketi ve internet izni; ASP.NET Core `/api/seferler` uç noktası entegrasyonu, `ApiServisi`, `FutureBuilder` ile liste yükleme | – |
-| 7 | Semih TAKILAN | `shared_preferences` ile oturum ve token saklama; "Biletlerim" ekranı, PNR sorgulama ve bilet iptal akışı (`Dismissible`) | – |
-| 8 | Semih TAKILAN | Yönetici (Admin) paneli ve sefer CRUD ekranları; bilet detayında dinamik QR kod (`qr_flutter`); kalıcı açık/koyu tema tercihi | – |
-| 9 | Semih TAKILAN | Uçtan uca sistem entegrasyon testleri, responsive kontroller, `README.md` güncellemesi; 2. Sınıf İçi Gösterim ve final teslimi | – |
+| 1 | Furkan ERDEM | Mobil proje (`/mobile`) ve Material 3 tema altyapısı; Scaffold, Row, Column ile Sefer Arama ana ekranı; Nereden/Nereye ve tarih seçimi (`ElevatedButton`, `FilledButton`, `OutlinedButton`) ve SnackBar geri bildirimleri; `setState` ile etkileşim ve dinamik arama butonu | Devam ediyor |
+| 2 | Furkan ERDEM | Kayıt (ad, soyad, e-posta, cep telefonu, şifre) ve giriş formları; `TextFormField` ve web ile aynı `validator` kuralları; şehir seçimi için `DropdownButton` (81 il), sözleşme onayı için `CheckboxListTile`; klavye taşma koruması | – |
+| 3 | Furkan ERDEM | Veri modelleri (`Sefer`, `Otobus`, `Sehir`, `Bilet`); `ListView.builder` ile sefer sonuç listesi, sefer kartları (`Card`, `ListTile`) ve boş durum tasarımı; fiyat/saat sıralaması ve firma filtresi | – |
+| 4 | Furkan ERDEM | `Navigator` ile sayfa geçişi ve veri aktarımı; 2+1 / 2+2 koltuk yerleşimi, birden fazla koltuk seçimi, yolcu cinsiyeti ve yan koltuk kuralı (`AlertDialog`); 1. Sınıf İçi Gösterim (18 Kasım) | – |
+| 5 | Furkan ERDEM | Uygulama iskeleti: `NavigationBar` (alt menü), `Drawer` (yan menü), `IndexedStack`; yolcu bilgileri formu (T.C. kimlik no, cinsiyet), kredi kartı simülasyonu (Luhn); ortak arka uca JWT ile kayıt/giriş uç noktaları | – |
+| 6 | Semih TAKILAN | `http` paketi, internet ve geliştirme için HTTP izni; `ApiServisi`, `fromJson`/`toJson`, `FutureBuilder` ile sefer listesi; ortak arka uca koltuk durumu, bilet satın alma, Biletlerim, PNR sorgulama ve iptal uç noktaları | – |
+| 7 | Semih TAKILAN | Giriş/kayıt ekranlarının API'ye bağlanması; token için `flutter_secure_storage`, kullanıcı bilgisi için `shared_preferences`, oturum için `provider`; koltuk seçimi ve ödemenin API'ye bağlanması; "Biletlerim", PNR sorgulama ve bilet iptali (`Dismissible`) | – |
+| 8 | Semih TAKILAN | Yönetici (Admin) paneli (özet sayaçları) ve sefer ekleme/düzenleme/silme; bilet detayında PNR içeren QR kod (`qr_flutter`); profil sayfası ve kalıcı açık/koyu tema tercihi | – |
+| 9 | Semih TAKILAN | Uçtan uca testler, farklı ekran boyutlarında taşma kontrolleri, `README.md` tamamlanması; 2. Sınıf İçi Gösterim (23 Aralık) ve final teslimi | – |
