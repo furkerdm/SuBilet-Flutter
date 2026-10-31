@@ -49,9 +49,26 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
   String _kalkis = 'Ankara';
   String _varis = 'İstanbul';
 
-  // Başlangıçta bugünün tarihi
-  DateTime _secilenTarih = DateTime.now();
+  static const _gunAdlari = [
+    'Pazartesi',
+    'Salı',
+    'Çarşamba',
+    'Perşembe',
+    'Cuma',
+    'Cumartesi',
+    'Pazar',
+  ];
+
+  // Başlangıçta bugünün tarihi (saat bilgisi olmadan)
+  DateTime _secilenTarih = DateUtils.dateOnly(DateTime.now());
   String _secilenEtiket = 'Bugün';
+
+  // 05.11.2026 biçiminde tarih metni
+  String _tarihMetni(DateTime tarih) {
+    final gun = tarih.day.toString().padLeft(2, '0');
+    final ay = tarih.month.toString().padLeft(2, '0');
+    return '$gun.$ay.${tarih.year}';
+  }
 
   void _sehirleriDegistir() {
     setState(() {
@@ -115,25 +132,55 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
     );
   }
 
-  // Tarihi gün sayısı ekleyerek güncelleyen fonksiyon
-  void _tarihAyarla(int gunEkle, String etiket) {
+  // Seçilen tarihi kaydeder ve kullanıcıya bildirir
+  void _tarihiSec(DateTime tarih, String etiket) {
     setState(() {
-      _secilenTarih = DateTime.now().add(Duration(days: gunEkle));
+      _secilenTarih = tarih;
       _secilenEtiket = etiket;
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Tarih $etiket (${_secilenTarih.day}.${_secilenTarih.month}.${_secilenTarih.year}) olarak seçildi.'),
+        content: Text('Tarih $etiket (${_tarihMetni(tarih)}) olarak seçildi.'),
         duration: const Duration(seconds: 1),
       ),
     );
+  }
+
+  // Tarihi gün sayısı ekleyerek güncelleyen fonksiyon
+  void _tarihAyarla(int gunEkle, String etiket) {
+    final bugun = DateUtils.dateOnly(DateTime.now());
+    _tarihiSec(DateUtils.addDaysToDate(bugun, gunEkle), etiket);
+  }
+
+  // Takvimden bugünden 90 gün sonrasına kadar bir tarih seçtirir
+  Future<void> _takvimdenSec() async {
+    final bugun = DateUtils.dateOnly(DateTime.now());
+    final yarin = DateUtils.addDaysToDate(bugun, 1);
+    final secilen = await showDatePicker(
+      context: context,
+      initialDate: _secilenTarih.isBefore(bugun) ? bugun : _secilenTarih,
+      firstDate: bugun,
+      lastDate: DateUtils.addDaysToDate(bugun, 90),
+      helpText: 'Seyahat tarihini seçin',
+    );
+    if (secilen == null || !mounted) return;
+
+    final String etiket;
+    if (DateUtils.isSameDay(secilen, bugun)) {
+      etiket = 'Bugün';
+    } else if (DateUtils.isSameDay(secilen, yarin)) {
+      etiket = 'Yarın';
+    } else {
+      etiket = _gunAdlari[secilen.weekday - 1];
+    }
+    _tarihiSec(DateUtils.dateOnly(secilen), etiket);
   }
 
   void _seferAra() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          '$_kalkis -> $_varis (${_secilenTarih.day}.${_secilenTarih.month}.${_secilenTarih.year}) için seferler aranıyor...',
+          '$_kalkis -> $_varis (${_tarihMetni(_secilenTarih)}) için seferler aranıyor...',
         ),
         backgroundColor: Colors.indigo,
         duration: const Duration(seconds: 2),
@@ -233,6 +280,16 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 8),
+                    // Takvimden başka bir tarih seçimi
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.calendar_month),
+                        label: const Text('Takvimden Tarih Seç'),
+                        onPressed: _takvimdenSec,
+                      ),
+                    ),
                     const SizedBox(height: 12),
                     // Seçilen Tarihin Ekranda Gösterildiği Kısım
                     Container(
@@ -248,7 +305,7 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
                           const Icon(Icons.calendar_today, size: 18, color: Colors.indigo),
                           const SizedBox(width: 8),
                           Text(
-                            'Seyahat Tarihi: ${_secilenTarih.day}.${_secilenTarih.month}.${_secilenTarih.year} ($_secilenEtiket)',
+                            'Seyahat Tarihi: ${_tarihMetni(_secilenTarih)} ($_secilenEtiket)',
                             style: TextStyle(
                               color: Colors.grey.shade800,
                               fontWeight: FontWeight.w600,
