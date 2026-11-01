@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'package:mobile/giris_sayfasi.dart';
+import 'kayit_sayfasi.dart';
 void main() => runApp(const SuBiletApp());
 
 class SuBiletApp extends StatelessWidget {
@@ -200,6 +201,18 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            tooltip: 'Giriş Yap',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const GirisSayfasi()),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
