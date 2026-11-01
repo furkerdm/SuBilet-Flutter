@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mobile/giris_sayfasi.dart';
 import 'kayit_sayfasi.dart';
+import 'sehirler.dart';
 void main() => runApp(const SuBiletApp());
 
 class SuBiletApp extends StatelessWidget {
@@ -33,20 +34,6 @@ class SeferAramaSayfasi extends StatefulWidget {
 }
 
 class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
-  // 2. haftada 81 ilin tamamı DropdownButton ile seçilebilecek
-  static const _sehirler = [
-    'Adana',
-    'Ankara',
-    'Antalya',
-    'Bursa',
-    'Eskişehir',
-    'İstanbul',
-    'İzmir',
-    'Konya',
-    'Samsun',
-    'Trabzon',
-  ];
-
   String _kalkis = 'Ankara';
   String _varis = 'İstanbul';
 
@@ -88,36 +75,34 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
     );
   }
 
-  // Alttan açılan listeden kalkış ya da varış şehrini seçtirir
-  Future<void> _sehirSec({required bool kalkisMi}) async {
-    final mevcut = kalkisMi ? _kalkis : _varis;
-    final secilen = await showModalBottomSheet<String>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              child: Text(
-                kalkisMi ? 'Nereden?' : 'Nereye?',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-            for (final sehir in _sehirler)
-              ListTile(
-                title: Text(sehir),
-                trailing: sehir == mevcut
-                    ? const Icon(Icons.check, color: Colors.indigo)
-                    : null,
-                onTap: () => Navigator.pop(context, sehir),
-              ),
-          ],
-        ),
-      ),
+  // Kalkış ya da varış şehrini 81 il arasından seçtiren açılır liste
+  Widget _sehirSecimi({required bool kalkisMi}) {
+    return DropdownButton<String>(
+      key: ValueKey(kalkisMi ? 'kalkisSecimi' : 'varisSecimi'),
+      value: kalkisMi ? _kalkis : _varis,
+      isExpanded: true,
+      isDense: true,
+      menuMaxHeight: 400,
+      underline: const SizedBox.shrink(),
+      // Kapalıyken seçili şehir kalın, açılan listede normal yazılır
+      selectedItemBuilder: (context) => [
+        for (final sehir in sehirler)
+          Text(
+            sehir,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+      ],
+      items: [
+        for (final sehir in sehirler)
+          DropdownMenuItem(value: sehir, child: Text(sehir)),
+      ],
+      onChanged: (secilen) => _sehirSec(secilen, kalkisMi: kalkisMi),
     );
-    if (secilen == null || !mounted) return;
+  }
+
+  // Açılır listeden seçilen şehri kaydeder ve kullanıcıya bildirir
+  void _sehirSec(String? secilen, {required bool kalkisMi}) {
+    if (secilen == null) return;
 
     setState(() {
       if (kalkisMi) {
@@ -234,11 +219,7 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
                       child: ListTile(
                         leading: const Icon(Icons.location_on, color: Colors.indigo),
                         title: const Text('Kalkış Noktası'),
-                        onTap: () => _sehirSec(kalkisMi: true),
-                        subtitle: Text(
-                          _kalkis,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
+                        subtitle: _sehirSecimi(kalkisMi: true),
                         trailing: IconButton(
                           icon: const Icon(Icons.swap_vert, color: Colors.indigo),
                           tooltip: 'Yön Değiştir',
@@ -256,11 +237,7 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
                       child: ListTile(
                         leading: const Icon(Icons.flag, color: Colors.indigo),
                         title: const Text('Varış Noktası'),
-                        onTap: () => _sehirSec(kalkisMi: false),
-                        subtitle: Text(
-                          _varis,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
+                        subtitle: _sehirSecimi(kalkisMi: false),
                       ),
                     ),
                     if (!_aramaYapilabilir)

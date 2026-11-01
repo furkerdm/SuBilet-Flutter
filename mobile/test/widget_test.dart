@@ -2,12 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mobile/main.dart';
+import 'package:mobile/sehirler.dart';
 
 // Kalkış ya da varış alanında gösterilen şehri bulur
 Finder alandakiSehir(String alan, String sehir) => find.descendant(
   of: find.widgetWithText(ListTile, alan),
   matching: find.text(sehir),
 );
+
+// Açılır listeyi açar, şehre kadar kaydırır ve seçer
+Future<void> sehirSec(WidgetTester tester, String alanKey, String sehir) async {
+  final secim = find.byKey(ValueKey(alanKey));
+  final mevcut = tester.widget<DropdownButton<String>>(secim).value!;
+  await tester.tap(secim);
+  await tester.pumpAndSettle();
+
+  // Liste seçili şehirde açılır; aranan şehir yukarıdaysa yukarı kaydırılır
+  final yukari = sehirler.indexOf(sehir) < sehirler.indexOf(mevcut);
+  final menudekiSehir = find.widgetWithText(DropdownMenuItem<String>, sehir);
+  await tester.scrollUntilVisible(
+    menudekiSehir,
+    yukari ? -150 : 150,
+    scrollable: find.byType(Scrollable).last,
+  );
+  await tester.pumpAndSettle();
+  // Öğenin ortası boş kalabildiği için öğeyi saran InkWell'e dokunulur
+  await tester.tap(
+    find.ancestor(of: menudekiSehir, matching: find.byType(InkWell)).first,
+  );
+  await tester.pumpAndSettle();
+}
 
 ButtonStyleButton aramaButonu(WidgetTester tester) =>
     tester.widget<ButtonStyleButton>(
@@ -44,32 +68,48 @@ void main() {
     expect(alandakiSehir('Varış Noktası', 'Ankara'), findsOneWidget);
   });
 
-  testWidgets('Listeden seçilen şehir kalkış noktası olur', (tester) async {
+  testWidgets('Şehir listelerinde 81 ilin tamamı var', (tester) async {
     await tester.pumpWidget(const SuBiletApp());
-    await tester.tap(find.text('Kalkış Noktası'));
-    await tester.pumpAndSettle();
 
-    expect(find.text('Nereden?'), findsOneWidget);
-    await tester.tap(find.text('Antalya'));
-    await tester.pumpAndSettle();
+    expect(sehirler, hasLength(81));
+    expect(sehirler.toSet(), hasLength(81));
+    for (final alan in ['kalkisSecimi', 'varisSecimi']) {
+      final secim = tester.widget<DropdownButton<String>>(
+        find.byKey(ValueKey(alan)),
+      );
+      expect(secim.items!.map((oge) => oge.value), sehirler);
+    }
+  });
 
-    expect(alandakiSehir('Kalkış Noktası', 'Antalya'), findsOneWidget);
-    expect(find.text('Kalkış noktası Antalya olarak seçildi.'), findsOneWidget);
+  testWidgets('Açılır listeden seçilen şehir kalkış noktası olur', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const SuBiletApp());
+    await sehirSec(tester, 'kalkisSecimi', 'Zonguldak');
+
+    expect(alandakiSehir('Kalkış Noktası', 'Zonguldak'), findsOneWidget);
+    expect(
+      find.text('Kalkış noktası Zonguldak olarak seçildi.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Açılır listeden seçilen şehir varış noktası olur', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const SuBiletApp());
+    await sehirSec(tester, 'varisSecimi', 'Adana');
+
+    expect(alandakiSehir('Varış Noktası', 'Adana'), findsOneWidget);
+    expect(find.text('Varış noktası Adana olarak seçildi.'), findsOneWidget);
+    expect(aramaButonu(tester).enabled, isTrue);
   });
 
   testWidgets('Kalkış ve varış aynıysa arama butonu pasif olur', (
     tester,
   ) async {
     await tester.pumpWidget(const SuBiletApp());
-    await tester.tap(find.text('Varış Noktası'));
-    await tester.pumpAndSettle();
-    await tester.tap(
-      find.descendant(
-        of: find.byType(BottomSheet),
-        matching: find.text('Ankara'),
-      ),
-    );
-    await tester.pumpAndSettle();
+    await sehirSec(tester, 'varisSecimi', 'Ankara');
 
     expect(find.text('Kalkış ve varış noktası aynı olamaz.'), findsOneWidget);
     expect(aramaButonu(tester).enabled, isFalse);
