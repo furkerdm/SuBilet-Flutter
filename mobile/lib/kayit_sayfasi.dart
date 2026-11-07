@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'giris_sayfasi.dart';
+import 'widgets/sozlesme_onayi.dart';
 
 class KayitSayfasi extends StatefulWidget {
   const KayitSayfasi({super.key});
@@ -133,7 +134,10 @@ class _KayitSayfasiState extends State<KayitSayfasi> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
+              // İşaretlenmeden form doğrulanmaz
+              SozlesmeOnayi(),
+              const SizedBox(height: 8),
               FilledButton.icon(
                 onPressed: _kayitOl,
                 icon: const Icon(Icons.person_add),
