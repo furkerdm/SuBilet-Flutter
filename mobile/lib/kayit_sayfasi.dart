@@ -48,8 +48,10 @@ class _KayitSayfasiState extends State<KayitSayfasi> {
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
-      body: Padding(
+      // Klavye açılınca form taşmasın diye kaydırılabilir; sürükleyince klavye kapanır
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Form(
           key: _formKey,
           child: Column(
