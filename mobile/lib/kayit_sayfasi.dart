@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'giris_sayfasi.dart';
+import 'widgets/sozlesme_onayi.dart';
 
 class KayitSayfasi extends StatefulWidget {
   const KayitSayfasi({super.key});
@@ -48,8 +49,10 @@ class _KayitSayfasiState extends State<KayitSayfasi> {
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
-      body: Padding(
+      // Klavye açılınca form taşmasın diye kaydırılabilir; sürükleyince klavye kapanır
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Form(
           key: _formKey,
           child: Column(
@@ -131,7 +134,10 @@ class _KayitSayfasiState extends State<KayitSayfasi> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
+              // İşaretlenmeden form doğrulanmaz
+              SozlesmeOnayi(),
+              const SizedBox(height: 8),
               FilledButton.icon(
                 onPressed: _kayitOl,
                 icon: const Icon(Icons.person_add),
