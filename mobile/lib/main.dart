@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mobile/giris_sayfasi.dart';
+import 'sefer_listesi_sayfasi.dart';
 import 'kayit_sayfasi.dart';
 import 'sehirler.dart';
 void main() => runApp(const SuBiletApp());
@@ -166,13 +167,14 @@ class _SeferAramaSayfasiState extends State<SeferAramaSayfasi> {
   }
 
   void _seferAra() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '$_kalkis -> $_varis (${_tarihMetni(_secilenTarih)}) için seferler aranıyor...',
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SeferListesiSayfasi(
+          kalkisSehir: _kalkis,
+          varisSehir: _varis,
+          tarih: _secilenTarih,
         ),
-        backgroundColor: Colors.indigo,
-        duration: const Duration(seconds: 2),
       ),
     );
   }
