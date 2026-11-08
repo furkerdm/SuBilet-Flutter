@@ -15,53 +15,49 @@ class SeferListesiSayfasi extends StatelessWidget {
     required this.tarih,
   });
 
+  // API bağlanana kadar kullanılan örnek veri; firmalar web projesindeki
+  // başlangıç verisiyle aynıdır.
   List<Sefer> _ornekSeferleriUret() {
+    Sefer sefer(
+      int id,
+      int firmaId,
+      String firmaAdi,
+      KoltukDuzeni koltukDuzeni,
+      int saat,
+      int dakika,
+      int sureDakika,
+      double fiyat,
+    ) {
+      final kalkis = DateTime(tarih.year, tarih.month, tarih.day, saat, dakika);
+      return Sefer(
+        id: id,
+        firmaId: firmaId,
+        firmaAdi: firmaAdi,
+        otobusId: 10 + id,
+        koltukDuzeni: koltukDuzeni,
+        kalkisSehirId: 6,
+        kalkisSehirAdi: kalkisSehir,
+        varisSehirId: 34,
+        varisSehirAdi: varisSehir,
+        kalkisZamani: kalkis,
+        tahminiVarisZamani: kalkis.add(Duration(minutes: sureDakika)),
+        fiyat: fiyat,
+      );
+    }
+
+    const anadolu = 'Anadolu Ekspres';
+    const ege = 'Ege Yıldızı Turizm';
+    const bogazici = 'Boğaziçi Seyahat';
+    const ikiArtiBir = KoltukDuzeni.ikiArtiBir;
+    const ikiArtiIki = KoltukDuzeni.ikiArtiIki;
+
+    // id, firma no ve adı, koltuk düzeni, kalkış saati ve dakikası, süre (dk), fiyat
     return [
-      Sefer(
-        id: 1,
-        firmaId: 1,
-        firmaAdi: 'Kamil Koç',
-        otobusId: 10,
-        koltukDuzeni: KoltukDuzeni.ikiArtiBir,
-        kalkisSehirId: 6,
-        kalkisSehirAdi: kalkisSehir,
-        varisSehirId: 34,
-        varisSehirAdi: varisSehir,
-        kalkisZamani: DateTime(tarih.year, tarih.month, tarih.day, 9, 30),
-        tahminiVarisZamani: DateTime(tarih.year, tarih.month, tarih.day, 15, 0),
-        fiyat: 450.0,
-        durum: SeferDurumu.aktif,
-      ),
-      Sefer(
-        id: 2,
-        firmaId: 2,
-        firmaAdi: 'Pamukkale Turizm',
-        otobusId: 11,
-        koltukDuzeni: KoltukDuzeni.ikiArtiIki,
-        kalkisSehirId: 6,
-        kalkisSehirAdi: kalkisSehir,
-        varisSehirId: 34,
-        varisSehirAdi: varisSehir,
-        kalkisZamani: DateTime(tarih.year, tarih.month, tarih.day, 13, 0),
-        tahminiVarisZamani: DateTime(tarih.year, tarih.month, tarih.day, 18, 30),
-        fiyat: 480.0,
-        durum: SeferDurumu.aktif,
-      ),
-      Sefer(
-        id: 3,
-        firmaId: 3,
-        firmaAdi: 'Metro Turizm',
-        otobusId: 12,
-        koltukDuzeni: KoltukDuzeni.ikiArtiBir,
-        kalkisSehirId: 6,
-        kalkisSehirAdi: kalkisSehir,
-        varisSehirId: 34,
-        varisSehirAdi: varisSehir,
-        kalkisZamani: DateTime(tarih.year, tarih.month, tarih.day, 17, 45),
-        tahminiVarisZamani: DateTime(tarih.year, tarih.month, tarih.day, 23, 15),
-        fiyat: 420.0,
-        durum: SeferDurumu.aktif,
-      ),
+      sefer(1, 1, anadolu, ikiArtiBir, 9, 30, 330, 450),
+      sefer(2, 2, ege, ikiArtiIki, 13, 0, 330, 480),
+      sefer(3, 3, bogazici, ikiArtiBir, 17, 45, 330, 420),
+      sefer(4, 1, anadolu, ikiArtiIki, 7, 0, 360, 390),
+      sefer(5, 2, ege, ikiArtiBir, 23, 30, 375, 510),
     ];
   }
 
