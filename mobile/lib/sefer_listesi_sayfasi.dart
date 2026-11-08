@@ -37,9 +37,19 @@ class _SeferListesiSayfasiState extends State<SeferListesiSayfasi> {
   late final List<Sefer> _seferler = widget.seferler ?? _ornekSeferleriUret();
   SeferSiralamasi _siralama = SeferSiralamasi.kalkisSaati;
 
-  // Seçili sıralamaya göre ekranda gösterilecek seferler
+  // null ise tüm firmalar gösterilir
+  int? _seciliFirmaId;
+
+  // Listede seferi olan firmalar (firma no → ad), ada göre sıralı
+  late final List<MapEntry<int, String>> _firmalar = {
+    for (final s in _seferler) s.firmaId: s.firmaAdi,
+  }.entries.toList()..sort((a, b) => a.value.compareTo(b.value));
+
+  // Seçili firmaya ve sıralamaya göre ekranda gösterilecek seferler
   List<Sefer> get _gosterilenSeferler {
-    final liste = [..._seferler];
+    final liste = _seciliFirmaId == null
+        ? [..._seferler]
+        : _seferler.where((s) => s.firmaId == _seciliFirmaId).toList();
     liste.sort((a, b) {
       final sonuc = switch (_siralama) {
         SeferSiralamasi.kalkisSaati => 0,
@@ -138,6 +148,33 @@ class _SeferListesiSayfasiState extends State<SeferListesiSayfasi> {
     );
   }
 
+  // Firma filtresi; tek firmalı listede gösterilmez
+  Widget _firmaFiltresi() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+      child: Row(
+        children: [
+          ChoiceChip(
+            label: const Text('Tüm firmalar'),
+            selected: _seciliFirmaId == null,
+            onSelected: (_) => setState(() => _seciliFirmaId = null),
+          ),
+          for (final firma in _firmalar) ...[
+            const SizedBox(width: 8),
+            ChoiceChip(
+              label: Text(firma.value),
+              selected: _seciliFirmaId == firma.key,
+              // Seçili firmaya yeniden dokunulursa filtre kaldırılır
+              onSelected: (secildi) =>
+                  setState(() => _seciliFirmaId = secildi ? firma.key : null),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   // Sefer sayısı ve sıralama seçimi
   Widget _siralamaCubugu(int seferSayisi) {
     return Padding(
@@ -186,6 +223,7 @@ class _SeferListesiSayfasiState extends State<SeferListesiSayfasi> {
           ? _bosDurum()
           : Column(
               children: [
+                if (_firmalar.length > 1) _firmaFiltresi(),
                 _siralamaCubugu(seferler.length),
                 Expanded(
                   child: ListView.builder(
