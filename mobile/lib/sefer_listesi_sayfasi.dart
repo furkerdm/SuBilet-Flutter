@@ -3,6 +3,16 @@ import 'models/enumlar.dart';
 import 'models/sefer.dart';
 import 'widgets/sefer_karti.dart';
 
+// Sefer listesindeki sıralama seçenekleri
+enum SeferSiralamasi {
+  kalkisSaati('Kalkış saati'),
+  fiyatArtan('En düşük fiyat'),
+  fiyatAzalan('En yüksek fiyat');
+
+  final String gorunenAd;
+  const SeferSiralamasi(this.gorunenAd);
+}
+
 class SeferListesiSayfasi extends StatefulWidget {
   final String kalkisSehir;
   final String varisSehir;
@@ -25,6 +35,22 @@ class SeferListesiSayfasi extends StatefulWidget {
 
 class _SeferListesiSayfasiState extends State<SeferListesiSayfasi> {
   late final List<Sefer> _seferler = widget.seferler ?? _ornekSeferleriUret();
+  SeferSiralamasi _siralama = SeferSiralamasi.kalkisSaati;
+
+  // Seçili sıralamaya göre ekranda gösterilecek seferler
+  List<Sefer> get _gosterilenSeferler {
+    final liste = [..._seferler];
+    liste.sort((a, b) {
+      final sonuc = switch (_siralama) {
+        SeferSiralamasi.kalkisSaati => 0,
+        SeferSiralamasi.fiyatArtan => a.fiyat.compareTo(b.fiyat),
+        SeferSiralamasi.fiyatAzalan => b.fiyat.compareTo(a.fiyat),
+      };
+      // Eşitlikte erken kalkan sefer önce gelir
+      return sonuc != 0 ? sonuc : a.kalkisZamani.compareTo(b.kalkisZamani);
+    });
+    return liste;
+  }
 
   // API bağlanana kadar kullanılan örnek veri; firmalar web projesindeki
   // başlangıç verisiyle aynıdır.
@@ -112,8 +138,44 @@ class _SeferListesiSayfasiState extends State<SeferListesiSayfasi> {
     );
   }
 
+  // Sefer sayısı ve sıralama seçimi
+  Widget _siralamaCubugu(int seferSayisi) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 8, 0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              '$seferSayisi sefer',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+          const Icon(Icons.sort, size: 20),
+          const SizedBox(width: 8),
+          DropdownButton<SeferSiralamasi>(
+            value: _siralama,
+            underline: const SizedBox.shrink(),
+            items: [
+              for (final secenek in SeferSiralamasi.values)
+                DropdownMenuItem(
+                  value: secenek,
+                  child: Text(secenek.gorunenAd),
+                ),
+            ],
+            onChanged: (secenek) {
+              if (secenek == null) return;
+              setState(() => _siralama = secenek);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final seferler = _gosterilenSeferler;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.kalkisSehir} → ${widget.varisSehir}'),
@@ -122,11 +184,19 @@ class _SeferListesiSayfasiState extends State<SeferListesiSayfasi> {
       ),
       body: _seferler.isEmpty
           ? _bosDurum()
-          : ListView.builder(
-              itemCount: _seferler.length,
-              itemBuilder: (context, index) {
-                return SeferKarti(sefer: _seferler[index]);
-              },
+          : Column(
+              children: [
+                _siralamaCubugu(seferler.length),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    itemCount: seferler.length,
+                    itemBuilder: (context, index) {
+                      return SeferKarti(sefer: seferler[index]);
+                    },
+                  ),
+                ),
+              ],
             ),
     );
   }
