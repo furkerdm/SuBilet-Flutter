@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mobile/giris_sayfasi.dart';
 import 'sefer_listesi_sayfasi.dart';
-import 'kayit_sayfasi.dart';
 import 'sehirler.dart';
 void main() => runApp(const SuBiletApp());
 

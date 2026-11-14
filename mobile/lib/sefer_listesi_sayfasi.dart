@@ -234,13 +234,16 @@ class _SeferListesiSayfasiState extends State<SeferListesiSayfasi> {
                       final sefer = seferler[index];
                       return SeferKarti(
                         sefer: sefer,
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                KoltukSecimiSayfasi(sefer: sefer),
-                          ),
-                        ),
+                        onTap: () async {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  KoltukSecimiSayfasi(sefer: sefer),
+                            ),
+                          );
+                        },
                       );
                     },
                   ),
