@@ -208,49 +208,155 @@ class _KoltukSecimiSayfasiState extends State<KoltukSecimiSayfasi> {
   }
 
   // Otobüsün üstten görünüşü: ön tarafı yukarıda, koridor ortada
+// Otobüsün üstten görünüşü: ön cam kavisi, şoför mahalli, kapı girişi ve koridor
   Widget _otobus() {
+    final renkler = Theme.of(context).colorScheme;
+
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        border: Border.all(color: Colors.blueGrey.shade100, width: 2),
+        color: Colors.white,
+        border: Border.all(color: Colors.blueGrey.shade200, width: 2.5),
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(36),
-          topRight: Radius.circular(12),
-          bottomLeft: Radius.circular(12),
-          bottomRight: Radius.circular(12),
+          topLeft: Radius.circular(48),
+          topRight: Radius.circular(48),
+          bottomLeft: Radius.circular(18),
+          bottomRight: Radius.circular(18),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      // Gövde koltuk sıraları kadar geniş olsun; "Ön" satırı ve çizgi ona uyar
       child: IntrinsicWidth(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          spacing: 8,
           children: [
-            Row(
-              children: [
-                Icon(Icons.arrow_upward, size: 18, color: Colors.grey.shade600),
-                const SizedBox(width: 4),
-                Text('Ön', style: TextStyle(color: Colors.grey.shade600)),
-              ],
-            ),
-            const Divider(height: 8),
-            for (final sira in _plan.siralar)
-              Row(
+            // Ön cam ve koltuk düzeni etiketi
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: renkler.primaryContainer.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
                 children: [
-                  for (final no in sira.sol) _koltuk(no),
-                  const SizedBox(width: 20), // koridor
-                  for (final no in sira.sag) _koltuk(no),
+                  Icon(Icons.directions_bus, size: 16, color: renkler.primary),
+                  const SizedBox(width: 6),
+                  Text(
+                    'ÖN · ${widget.sefer.koltukDuzeni.gorunenAd} Düzen',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: renkler.primary,
+                    ),
+                  ),
                 ],
               ),
+            ),
+            const SizedBox(height: 12),
+            // Şoför mahalli ve ön kapı göstergesi
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blueGrey.shade200),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.tire_repair, size: 18, color: Colors.blueGrey.shade700),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Şoför',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.blueGrey.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Ön Kapı',
+                      style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                    ),
+                    const SizedBox(width: 2),
+                    Icon(Icons.login, size: 16, color: Colors.grey.shade600),
+                  ],
+                ),
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Divider(height: 1, thickness: 1.5),
+            ),
+            // Koltuk sıraları ve orta koridor
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 8,
+              children: [
+                for (var i = 0; i < _plan.siralar.length; i++) ...[
+                  // Otobüsün tam ortasında orta kapı ayracı
+                  if (i == (_plan.siralar.length / 2).floor())
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        children: [
+                          const Expanded(child: Divider(endIndent: 8)),
+                          Text(
+                            'Orta Kapı',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey.shade500,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Icon(Icons.sensor_door_outlined, size: 14, color: Colors.grey.shade500),
+                        ],
+                      ),
+                    ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 8,
+                    children: [
+                      for (final no in _plan.siralar[i].sol) _koltuk(no),
+                      SizedBox(
+                        width: 24,
+                        child: Center(
+                          child: Text(
+                            '${i + 1}',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.grey.shade400,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                      for (final no in _plan.siralar[i].sag) _koltuk(no),
+                    ],
+                  ),
+                ],
+              ],
+            ),
           ],
         ),
       ),
     );
   }
-
   // Ekranın altındaki seçim özeti: seçilen koltuklar, toplam ve devam düğmesi
   Widget _secimCubugu() {
     final renkler = Theme.of(context).colorScheme;
