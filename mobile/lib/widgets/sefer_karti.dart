@@ -6,7 +6,10 @@ import '../models/sefer.dart';
 class SeferKarti extends StatelessWidget {
   final Sefer sefer;
 
-  const SeferKarti({super.key, required this.sefer});
+  /// Karta dokunulunca çalışır (koltuk seçimine geçiş); null ise kart dokunulamaz
+  final VoidCallback? onTap;
+
+  const SeferKarti({super.key, required this.sefer, this.onTap});
 
   // 09:30 biçiminde saat metni
   static String _saat(DateTime zaman) {
@@ -32,6 +35,7 @@ class SeferKarti extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: ListTile(
+        onTap: onTap,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         leading: CircleAvatar(
           backgroundColor: renkler.primaryContainer,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'koltuk_secimi_sayfasi.dart';
 import 'models/enumlar.dart';
 import 'models/sefer.dart';
 import 'widgets/sefer_karti.dart';
@@ -230,7 +231,17 @@ class _SeferListesiSayfasiState extends State<SeferListesiSayfasi> {
                     padding: const EdgeInsets.only(bottom: 12),
                     itemCount: seferler.length,
                     itemBuilder: (context, index) {
-                      return SeferKarti(sefer: seferler[index]);
+                      final sefer = seferler[index];
+                      return SeferKarti(
+                        sefer: sefer,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                KoltukSecimiSayfasi(sefer: sefer),
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ),

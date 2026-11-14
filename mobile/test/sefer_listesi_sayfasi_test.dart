@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:mobile/koltuk_secimi_sayfasi.dart';
 import 'package:mobile/sefer_listesi_sayfasi.dart';
 import 'package:mobile/widgets/sefer_karti.dart';
 
@@ -177,5 +178,25 @@ void main() {
 
     await siralamaSec(tester, 'En yüksek fiyat');
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Sefer kartına dokununca o seferin koltuk seçimi açılır', (
+    tester,
+  ) async {
+    uzunEkran(tester);
+    await tester.pumpWidget(sayfa());
+
+    final ilkKart = tester.widget<SeferKarti>(find.byType(SeferKarti).first);
+    await tester.tap(find.byType(SeferKarti).first);
+    await tester.pumpAndSettle();
+
+    final koltukSayfasi = tester.widget<KoltukSecimiSayfasi>(
+      find.byType(KoltukSecimiSayfasi),
+    );
+    expect(koltukSayfasi.sefer, same(ilkKart.sefer));
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.byType(KoltukSecimiSayfasi), findsNothing);
   });
 }
