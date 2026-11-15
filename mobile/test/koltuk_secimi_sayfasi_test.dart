@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/koltuk_secimi_sayfasi.dart';
 import 'package:mobile/models/enumlar.dart';
 import 'package:mobile/models/sefer.dart';
+import 'package:mobile/odeme_sayfasi.dart';
 import 'package:mobile/widgets/koltuk_dugmesi.dart';
 
 void main() {
@@ -176,6 +177,27 @@ void main() {
       findsOneWidget,
     );
     expect(dugme(tester, 6).seciliCinsiyet, isNull);
+  });
+
+  testWidgets('Devam Et seçilen koltuklarla ödeme sayfasını açar', (
+    tester,
+  ) async {
+    await sayfayiAc(tester);
+    await koltukSec(tester, 6, 'Kadın');
+    await koltukSec(tester, 2, 'Kadın');
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Devam Et'));
+    await tester.pumpAndSettle();
+
+    final odeme = tester.widget<OdemeSayfasi>(find.byType(OdemeSayfasi));
+    expect(odeme.sefer, same(sefer));
+    expect(odeme.koltuklar, {2: Cinsiyet.kadin, 6: Cinsiyet.kadin});
+    expect(find.text('1000 TL Öde'), findsOneWidget);
+
+    // Geri dönülünce seçim yerinde durur
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(dugme(tester, 2).seciliCinsiyet, Cinsiyet.kadin);
   });
 
   testWidgets('Koltuk sayısı ve dolu koltuklar verilmezse örnek veri '
