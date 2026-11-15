@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'models/enumlar.dart';
 import 'models/koltuk_plani.dart';
 import 'models/sefer.dart';
+import 'odeme_sayfasi.dart';
 import 'widgets/koltuk_dugmesi.dart';
 import 'widgets/sefer_karti.dart';
 
@@ -151,10 +152,17 @@ class _KoltukSecimiSayfasiState extends State<KoltukSecimiSayfasi> {
   }
 
   void _devamEt() {
-    // Yolcu bilgileri formu 5. haftada bu adıma bağlanacak
-    _bildir(
-      'Koltuk ${_seciliKoltuklar.join(', ')} seçildi. '
-      'Yolcu bilgileri adımı 5. haftada eklenecek.',
+    // GEÇİCİ: yolcu bilgileri formu (Furkan, 5. hafta) gelince önce o sayfa
+    // açılacak, ödeme sayfasına oradan geçilecek
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OdemeSayfasi(
+          sefer: widget.sefer,
+          koltuklar: Map.of(_secimler),
+        ),
+      ),
     );
   }
 
